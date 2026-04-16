@@ -1,48 +1,44 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Poly Track</title>
+import time
+import threading
+from src import speedstars
 
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/message_box_ui.css" />
+bots = []
+races = ["60m", "100m", "200m", "400m", "110mH", "400mH"]
 
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/customization.css" />
+def create_bots():
+    for i in range(10):
+        time.sleep(2.5)
+        account = speedstars.create_account("beingisdead on tt")
+        bots.append(account)
 
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/debug_ui.css" />
+def create_account():
+    return speedstars.create_account("beingisdead on tt")
 
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/editor.css" />
+def bot_thread(bot):
+    while True:
+        for race in races:
+            print(speedstars.update_user_data(race, bot, 0o0001))
+            print(speedstars.update_player_stats(race, bot, "4/20/1587", "0.00000"))
+            time.sleep(5)
 
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/editor_height_selector.css" />
+def bot_main():
+    create_bots()
 
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/hint.css" />
+    threads = []
+    for bot in bots:
+        thread = threading.Thread(target=bot_thread, args=(bot,))
+        thread.start()
+        threads.append(thread)
 
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/loading_ui.css" />
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
 
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/menu.css" />
-
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/speedometer.css" />
-
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt//css/theme.css" />
-
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/time_announcer.css" />
-
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/timer.css" />
-
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/track_export_ui.css" />
-
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/track_selection_ui.css" />
-
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/css/transition_system.css" />
-	</head>
-	<body>
-		<canvas id="screen"></canvas>
-
-		<div id="ui"></div>
-
-		<div id="transition-layer"></div>
-
-		<script src="https://cdn.jsdelivr.net/gh/wergboy/NLP@e46f2d7f33015cf93201e664a2e493800c03284d/pt/lib/ammo.js" defer></script>
-
-		<script type="module" src="https://cdn.jsdelivr.net/gh/wergboy/NLP@22f6094b69b1c9d45e17a82e93a41b7d88f99574/pt/dist/bundle.js" defer></script>
-	</body>
-</html>
-
+def main():
+    account = create_account()
+    while True:
+        for race in races:
+            print(speedstars.update_user_data(race, account, 0o0001))
+            print(speedstars.update_player_stats(race, account, "4/20/1587", "0.00000"))
+            time.sleep(3)
+main()
