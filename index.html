@@ -1,103 +1,101 @@
-
-
-      #unity-container {
-          width: 100%;
-          height: 100%;
-          position: fixed;
-          top: 0;
-          left: 0;
-      }
-  </style>
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-    </div>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Speed Stars - Poki</title>
     <script>
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-
-      }
-
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/webgl.loader.js";
-      var config = {
-        dataUrl: buildUrl + "/webgl.data",
-        frameworkUrl: buildUrl + "/webgl.framework.js",
-        codeUrl: buildUrl + "/webgl.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "Luke Doukakis",
-        productName: "Speed Stars",
-        productVersion: "1.0",
-        showBanner: unityShowBanner,
-      };
-
-      // By default Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        container.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
-
-        unityShowBanner('WebGL builds are not supported on mobile devices.');
-      } else {
-        function resizeCanvas() {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
-          canvas.style.width = window.innerWidth + "px";
-          canvas.style.height = window.innerHeight + "px";
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-      }
-
-      loadingBar.style.display = "block";
-
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          loadingBar.style.display = "none";
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
+        (function() {
+            const WORKER_DOMAIN = "manmygfisperfect.jokighohkh.workers.dev";
+            function proxyUrl(url) {
+                if (!url) return url;
+                if (!/^https?:\/\//i.test(url)) return url;
+                if (url.includes(WORKER_DOMAIN)) return url;
+                return "https://" + WORKER_DOMAIN + "/?url=" + encodeURIComponent(url);
+            }
+            const originalFetch = window.fetch;
+            window.fetch = function(input, init) {
+                if (typeof input === "string") {
+                    input = proxyUrl(input);
+                } else if (input instanceof Request) {
+                    input = new Request(proxyUrl(input.url), input);
+                }
+                return originalFetch.call(this, input, init);
+            };
+            const OriginalXHR = window.XMLHttpRequest;
+            function XHRInterceptor() {
+                const xhr = new OriginalXHR();
+                const originalOpen = xhr.open;
+                xhr.open = function(method, url, async, user, password) {
+                    return originalOpen.call(this, method, proxyUrl(url), async, user, password);
+                };
+                return xhr;
+            }
+            XHRInterceptor.prototype = OriginalXHR.prototype;
+            window.XMLHttpRequest = XHRInterceptor;
+            console.log("[Worker Proxy] Fetch/XHR requests routed through worker safely.");
+        })();
     </script>
-  </body>
+    <script>
+        window.config = {
+            loader: 'unity-2020',
+            debug: false,
+            maxRatio: 24 / 9,
+            minRatio: 9 / 24,
+            title: 'Speed Stars',
+            thumbnail: 'https://manmygfisperfect.jokighohkh.workers.dev/?url=https%3A%2F%2Fimg.poki-cdn.com%2F%2F04f09e51e79fd1b6a5cc974b504d6379.png',
+            numScreenshots: 0,
+            unityVersion: '2022.3.62f2',
+            unityWebglBuildUrl: '',
+            fileSize: 11,
+            cachedDecompressedFileSizes: {
+                '173694b4b1dc1c28696a0e14f4b81f78.framework.js': 73451,
+                '1b8077751f2094e0edb7d47627991bba.data': 5397428,
+                '7a2dbded24d57e056180125b1583e7c4.loader.js': 6412,
+                'df22c8f0026c4200bb37d5f2d67a003c.wasm': 5631270,
+            },
+            "metadata": {
+                "poki_template_version": 1,
+                "background_color": "#323232",
+                "code_filename": "df22c8f0026c4200bb37d5f2d67a003c.wasm",
+                "company_name": "Luke Doukakis",
+                "data_filename": "1b8077751f2094e0edb7d47627991bba.data",
+                "development_player": "false",
+                "framework_filename": "173694b4b1dc1c28696a0e14f4b81f78.framework.js",
+                "height": "256",
+                "loader_filename": "7a2dbded24d57e056180125b1583e7c4.loader.js",
+                "product_name": "Speed Stars",
+                "product_version": "2.49",
+                "splash_screen_style": "Dark",
+                "unity_version": "2022.3.62f2",
+                "use_data_caching": "true",
+                "use_threads": "false",
+                "use_wasm": "true",
+                "use_webgl_1_0": "false",
+                "use_webgl_2_0": "true",
+                "width": "512"
+            }
+        };
+    </script>
+    <script src="https://manmygfisperfect.jokighohkh.workers.dev/?url=https://game-cdn.poki.com/scripts/3ba159f4aa662589f569ebcd47b00ac16f3af577/poki-sdk-hoist-3ba159f4aa662589f569ebcd47b00ac16f3af577.js" crossorigin="anonymous"></script>
+    <style>
+        /* This hides scrollbars and makes the game full screen */
+        * { margin: 0; padding: 0;}
+        html, body { width: 100vw; height: 100vh; overflow: hidden; background: #002B50; font-family: Torus, Arial, Helvetica, sans-serif; color: #fff;}
+        #game-container { position: absolute !important; left: 50%; top: 50%; display: none;}
+        #game, #game canvas { width: 100%; height: 100%;}
+    </style>
+</head>
+<body>
+    <script src="https://manmygfisperfect.jokighohkh.workers.dev/?url=https://game-cdn.poki.com/loaders/v3/master-loader.js"></script>
+    <script src="https://manmygfisperfect.jokighohkh.workers.dev/?url=https://game-cdn.poki.com/scripts/v2/poki-sdk.js"></script>
+    <script src="https://manmygfisperfect.jokighohkh.workers.dev/?url=https://game-cdn.poki.com/loaders/v3/unity-2020.js"></script>
+    <script>
+        window.addEventListener("click", () => {
+            const canvas = document.getElementById("game");
+            if (canvas) {
+                canvas.focus();
+            }
+        });
+    </script>
+</body>
 </html>
